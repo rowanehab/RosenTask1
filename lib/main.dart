@@ -11,6 +11,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: ServersScreen());
+    return const MaterialApp(home: SplashAnimated());
   }
 }

@@ -129,12 +129,29 @@ class _ServersScreenState extends State<ServersScreen> {
             builder: (BuildContext context) {
               return AddServerDialog(
                 onSave: (serverData) {
+                  bool flag= true;
                   setState(() {
+                    if (serverData.isDefault) {
+                      for (var server in serverList) {
+                        flag=false;
+                        server.isDefault = false;
+                      }
+                    }
                     serverList.add(serverData);
+
                   });
 
                   // Save the updated server list to SharedPreferences
                   setServerData(serverList);
+                  // Close the dialog
+                 // Navigator.of(context).pop();
+
+                  // Navigate to the ServersScreen
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) =>const ServersScreen(),
+                    ),
+                  );
                 },
                 serverList: serverList, // Pass the actual serverList
               );

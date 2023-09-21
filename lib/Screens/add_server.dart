@@ -5,13 +5,13 @@ class AddServerDialog extends StatefulWidget {
 
   final Function(ServerData) onSave;
   final List<ServerData> serverList;
-  final ServerData? serverToEdit; // Add this parameter
+  final ServerData? serverToEdit;
 
   const AddServerDialog({
     Key? key,
     required this.onSave,
     required this.serverList,
-    this.serverToEdit, // Add this parameter
+    this.serverToEdit,
   }) : super(key: key);
 
   @override
