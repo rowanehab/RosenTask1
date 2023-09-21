@@ -59,15 +59,15 @@ class _AddServerDialogState extends State<AddServerDialog> {
             controller: serverNameController,
             decoration: const InputDecoration(
               labelText: 'Server Name',
-              border: OutlineInputBorder(), // Add border to input fields
+              border: OutlineInputBorder(),
             ),
           ),
-          const SizedBox(height: 16), // Add some vertical spacing
+          const SizedBox(height: 16),
           TextField(
             controller: serverIPController,
             decoration: const InputDecoration(
               labelText: 'Server IP/Domain',
-              border: OutlineInputBorder(), // Add border to input fields
+              border: OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 16), // Add some vertical spacing

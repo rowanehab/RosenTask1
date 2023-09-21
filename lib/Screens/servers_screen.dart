@@ -19,6 +19,7 @@ class _ServersScreenState extends State<ServersScreen> {
     getServerData();
   }
 
+  // Method to save server data to SharedPreferences
   static Future<void> setServerData(List<ServerData> serverList) async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     final serverListJson = serverList.map((server) => server.toJson()).toList();
@@ -58,8 +59,8 @@ class _ServersScreenState extends State<ServersScreen> {
             decoration: const BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: Colors.grey, // Add your desired border color here
-                  width: 1.0, // Adjust the border width as needed
+                  color: Colors.grey,
+                  width: 1.0,
                 ),
               ),
             ),
@@ -108,7 +109,7 @@ class _ServersScreenState extends State<ServersScreen> {
                   IconButton(
                     icon: const Icon(
                       Icons.delete,
-                      color: Colors.red, // Set the icon color to red
+                      color: Colors.red,
                     ),
                     onPressed: () {
                       _showDeleteConfirmationDialog(server);
@@ -176,6 +177,7 @@ class _ServersScreenState extends State<ServersScreen> {
     );
   }
 
+  // Method to retrieve server data from SharedPreferences
 
   void getServerData() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
@@ -187,8 +189,6 @@ class _ServersScreenState extends State<ServersScreen> {
           .toList();
 
       setState(() {
-        // Now, serverList contains all stored server data
-        // You can iterate through serverList to build your UI widgets
 
         // Combine the existing serverList and any new servers from the TestScreen
         serverList.addAll(serverList);
