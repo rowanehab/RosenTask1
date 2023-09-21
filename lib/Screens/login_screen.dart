@@ -1,12 +1,9 @@
-import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:task1_rosenfield_health/Screens/servers_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task1_rosenfield_health/Authetication/Authenticate.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +20,6 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
-
 class _LoginForm extends StatefulWidget {
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -34,61 +30,6 @@ class _LoginFormState extends State<_LoginForm> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   String _loginMessage = '';
-
-  // Function to perform login
-  void _performLogin(String username, password) async {
-    try {
-      // Send a POST request to the authentication API
-      Response response = await post(
-        Uri.parse('https://icodesuite.com/icodecrnapi/v1/api/Authentication/login'),
-        headers: {
-          'Content-Type': 'application/json', // Specify JSON content type
-        },
-        body: jsonEncode({
-          'username': username,
-          'password': password,
-        }),
-      );
-
-      // Check the response status code
-      if (response.statusCode == 200) {
-        var responseData = jsonDecode(response.body);
-
-        // Check the login status from the response data
-        if (responseData['status'] != -1) {
-          setState(() {
-            _loginMessage = 'Login successfully!';
-          });
-
-          // Extract and store the token
-          String token = responseData['resource']['token']; // Extract the token from the 'resource' object
-          print('Token: $token');
-
-          // Store the token in shared preferences
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('token', token);
-
-
-          // Navigate to the home page on successful login
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const ServersScreen()),
-          );
-        } else {
-          setState(() {
-            _loginMessage = 'Login failed!';
-          });
-        }
-      } else {
-        //print('Login failed with status code: ${response.statusCode}');
-        setState(() {
-          _loginMessage = 'Login failed!';
-        });
-      }
-    } catch (e) {
-      //print(e.toString());
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -118,7 +59,6 @@ class _LoginFormState extends State<_LoginForm> {
                 return null;
               },
             ),
-
             const SizedBox(height: 20),
             TextFormField(
               controller: _passwordController,
@@ -136,10 +76,16 @@ class _LoginFormState extends State<_LoginForm> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState?.validate() ?? false) {
-                  _performLogin(_usernameController.text.toString(),
-                      _passwordController.text.toString());
+                  final result = await performLogin(
+                    context,
+                    _usernameController.text.toString(),
+                    _passwordController.text.toString(),
+                  );
+                  setState(() {
+                    _loginMessage = result;
+                  });
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -153,6 +99,31 @@ class _LoginFormState extends State<_LoginForm> {
               ),
             ),
             const SizedBox(height: 20),
+            GestureDetector(
+              onTap: () {
+                authenticateWithFingerprint();
+              },
+              child: Column(
+                children: const [
+                  Icon(
+                    Icons.fingerprint,
+                    size: 40,
+                    color: Colors.blue,
+                  ),
+                  Text(
+                    'Use Fingerprint',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+
             Text(
               _loginMessage,
               style: TextStyle(
