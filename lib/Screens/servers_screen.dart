@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:task1_rosenfield_health/Screens/login_screen.dart';
-import 'add_server.dart';
+import 'add_server.dart'; // Assuming this is where your AddServerDialog class is defined
 import 'package:shared_preferences/shared_preferences.dart';
+
 class ServersScreen extends StatefulWidget {
   const ServersScreen({Key? key}) : super(key: key);
 
@@ -13,6 +14,7 @@ class ServersScreen extends StatefulWidget {
 class _ServersScreenState extends State<ServersScreen> {
   List<ServerData> serverList = [];
   int? defaultServerIndex;
+
   @override
   void initState() {
     super.initState();
@@ -53,7 +55,6 @@ class _ServersScreenState extends State<ServersScreen> {
         itemCount: serverList.length,
         itemBuilder: (context, index) {
           final server = serverList[index];
-          //final isDefault = index == defaultServerIndex;
 
           return Container(
             decoration: const BoxDecoration(
@@ -96,10 +97,8 @@ class _ServersScreenState extends State<ServersScreen> {
                 children: [
                   IconButton(
                     icon: const Icon(
-                        Icons.edit,
+                      Icons.edit,
                       color: Colors.green,
-
-
                     ),
                     onPressed: () {
                       // Open the edit dialog for the selected server
@@ -115,7 +114,6 @@ class _ServersScreenState extends State<ServersScreen> {
                       _showDeleteConfirmationDialog(server);
                     },
                   ),
-
                 ],
               ),
             ),
@@ -148,7 +146,6 @@ class _ServersScreenState extends State<ServersScreen> {
 
                   // Save the updated server list to SharedPreferences
                   setServerData(serverList);
-
                 },
                 serverList: serverList, // Pass the actual serverList
               );
@@ -181,6 +178,7 @@ class _ServersScreenState extends State<ServersScreen> {
             IconButton(
               icon: const Icon(Icons.adb_sharp),
               onPressed: () {
+                // Add your action for the second bottom navigation button here
               },
               color: Colors.white,
             ),
@@ -203,7 +201,6 @@ class _ServersScreenState extends State<ServersScreen> {
           .toList();
 
       setState(() {
-
         // Combine the existing serverList and any new servers from the TestScreen
         serverList.addAll(serverList);
       });
@@ -221,29 +218,29 @@ class _ServersScreenState extends State<ServersScreen> {
         bool isDefaultServer = server.isDefault;
 
         return AlertDialog(
-          title: Text('Edit Server'),
+          title: const Text('Edit Server'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: serverNameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Server Name',
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextField(
                 controller: serverIPController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Server IP/Domain',
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Row(
                 children: [
-                  Text(
+                  const Text(
                     'Default Server',
                     style: TextStyle(
                       fontSize: 16,
@@ -265,7 +262,8 @@ class _ServersScreenState extends State<ServersScreen> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                final updatedServerData = ServerData(
+
+                  final updatedServerData = ServerData(
                   name: serverNameController.text,
                   ip: serverIPController.text,
                   isDefault: isDefaultServer,
@@ -278,13 +276,12 @@ class _ServersScreenState extends State<ServersScreen> {
                     serverList[index] = updatedServerData;
                   }
                 });
-
                 // Save the updated server list to SharedPreferences
                 setServerData(serverList);
 
                 Navigator.of(context).pop();
               },
-              child: Text(
+              child: const Text(
                 'Save',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -295,7 +292,7 @@ class _ServersScreenState extends State<ServersScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(
+              child: const Text(
                 'Cancel',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -307,7 +304,6 @@ class _ServersScreenState extends State<ServersScreen> {
       },
     );
   }
-
 
   Future<void> _showDeleteConfirmationDialog(ServerData server) async {
     return showDialog<void>(
@@ -349,3 +345,4 @@ class _ServersScreenState extends State<ServersScreen> {
     );
   }
 }
+

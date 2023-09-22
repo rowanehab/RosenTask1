@@ -22,7 +22,8 @@ class _AddServerDialogState extends State<AddServerDialog> {
   final TextEditingController serverIPController = TextEditingController();
   bool isDefaultServer = false;
   String validationMessage = '';
-
+  _AddServerDialogState() {
+  }
   @override
   void initState() {
     super.initState();
@@ -33,7 +34,6 @@ class _AddServerDialogState extends State<AddServerDialog> {
       isDefaultServer = widget.serverToEdit!.isDefault;
     }
   }
-
   @override
   Widget build(BuildContext context) {
     // Change the title based on whether it's an edit or add operation
@@ -115,16 +115,8 @@ class _AddServerDialogState extends State<AddServerDialog> {
           onPressed: () {
             final serverName = serverNameController.text;
             final serverIP = serverIPController.text;
-
-            if (serverName.isEmpty || serverIP.isEmpty) {
-              setState(() {
-                validationMessage = 'Both fields are required.';
-              });
-            } else if (isServerNameUnique(serverName)) {
-              setState(() {
-                validationMessage = 'Server name already exists. Please enter a unique name.';
-              });
-            } else {
+            if(checkServerData( serverName,  serverIP))
+             {
               final updatedServerData = ServerData(
                 name: serverName,
                 ip: serverIP,
@@ -158,7 +150,7 @@ class _AddServerDialogState extends State<AddServerDialog> {
           child: const Text(
             'Cancel',
             style: TextStyle(
-              fontWeight: FontWeight.bold, // Make it bold
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -171,6 +163,25 @@ class _AddServerDialogState extends State<AddServerDialog> {
   bool isServerNameUnique(String name) {
     return widget.serverList.any((server) => server.name == name);
   }
+  bool checkServerData(String serverName, String serverIP) {
+    bool isValid = true; // Initialize a boolean variable
+
+    if (serverName.isEmpty || serverIP.isEmpty) {
+      setState(() {
+        validationMessage = 'Both fields are required.';
+      });
+      isValid = false; // Set the variable to false
+    } else if (isServerNameUnique(serverName)) {
+      setState(() {
+        validationMessage = 'Server name already exists. Please enter a unique name.';
+      });
+      isValid = false; // Set the variable to false
+    }
+
+    return isValid; // Return the boolean variable
+  }
+
+
 }
 
 class ServerData {
