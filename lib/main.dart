@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task1_rosenfield_health/Screens/servers_screen.dart';
 import 'package:task1_rosenfield_health/Screens/splash_screen.dart';
-//import 'package:task1_rosenfield_health/Screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());

@@ -178,7 +178,7 @@ class ServerData {
   late final String ip;
   late final bool isDefault;
 
-  ServerData({required this.name, required this.ip, this.isDefault = false});
+  ServerData({required this.name, required this.ip, required this.isDefault});
   Map<String, dynamic> toJson() {
     return {
       'name': name,

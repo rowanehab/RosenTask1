@@ -129,29 +129,26 @@ class _ServersScreenState extends State<ServersScreen> {
             builder: (BuildContext context) {
               return AddServerDialog(
                 onSave: (serverData) {
-                  bool flag= true;
                   setState(() {
                     if (serverData.isDefault) {
-                      for (var server in serverList) {
-                        flag=false;
-                        server.isDefault = false;
+                      List<ServerData> tempList = List.from(serverList);
+                      for (int i = 0; i < tempList.length; i++) {
+                        if (tempList[i].isDefault) {
+                          tempList[i] = ServerData(
+                            name: tempList[i].name,
+                            ip: tempList[i].ip,
+                            isDefault: false,
+                          );
+                        }
                       }
+                      serverList = tempList;
                     }
                     serverList.add(serverData);
-
                   });
 
                   // Save the updated server list to SharedPreferences
                   setServerData(serverList);
-                  // Close the dialog
-                 // Navigator.of(context).pop();
 
-                  // Navigate to the ServersScreen
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) =>const ServersScreen(),
-                    ),
-                  );
                 },
                 serverList: serverList, // Pass the actual serverList
               );
@@ -213,27 +210,104 @@ class _ServersScreenState extends State<ServersScreen> {
     }
   }
 
-// Method to open the edit dialog for a server
   void _openEditDialog(ServerData server) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AddServerDialog(
-          onSave: (editedServer) {
-            setState(() {
-              // Update the server data in the list
-              final index = serverList.indexOf(server);
-              if (index != -1) {
-                serverList[index] = editedServer;
-              }
-            });
-          },
-          serverList: serverList,
-          serverToEdit: server, // Pass the server data to edit
+        TextEditingController serverNameController =
+        TextEditingController(text: server.name);
+        TextEditingController serverIPController =
+        TextEditingController(text: server.ip);
+        bool isDefaultServer = server.isDefault;
+
+        return AlertDialog(
+          title: Text('Edit Server'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: serverNameController,
+                decoration: InputDecoration(
+                  labelText: 'Server Name',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 16),
+              TextField(
+                controller: serverIPController,
+                decoration: InputDecoration(
+                  labelText: 'Server IP/Domain',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 16),
+              Row(
+                children: [
+                  Text(
+                    'Default Server',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  Checkbox(
+                    value: isDefaultServer,
+                    onChanged: (value) {
+                      setState(() {
+                        isDefaultServer = value ?? false;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                final updatedServerData = ServerData(
+                  name: serverNameController.text,
+                  ip: serverIPController.text,
+                  isDefault: isDefaultServer,
+                );
+
+                setState(() {
+                  // Update the server data in the list
+                  final index = serverList.indexOf(server);
+                  if (index != -1) {
+                    serverList[index] = updatedServerData;
+                  }
+                });
+
+                // Save the updated server list to SharedPreferences
+                setServerData(serverList);
+
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Save',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         );
       },
     );
   }
+
 
   Future<void> _showDeleteConfirmationDialog(ServerData server) async {
     return showDialog<void>(
